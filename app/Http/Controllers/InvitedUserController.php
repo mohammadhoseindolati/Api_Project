@@ -4,15 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateNewInvitedUserRequest;
 use App\Http\Requests\UpdateInvitedUserRequset;
+use App\Http\Resources\InvitedUserResource;
 use App\Models\InvitedUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class InvitedUserController extends ApiController
 {
-    public function index(){
+    public function index($bulk){
 
-        return $this->successResponse(InvitedUser::all() , 200 ) ;
+        $validBulk = [10 , 50 , 100] ;
+
+        if (! in_array($bulk , $validBulk)){
+
+            return $this->errorResponse("The number should be 10 , 50 , 100 " , 404) ;
+        }
+
+        $users = InvitedUser::paginate($bulk);
+
+        $arrayParams = $this->getSearchParameters();
+
+
+        foreach ($arrayParams as $key => $value){
+
+          $result[] =  InvitedUser::query()->where($key , $value)->get() ;
+
+        }
+
+        return $this->successResponse(new InvitedUserResource($result) , 200 ) ;
+
     }
 
     public function store (CreateNewInvitedUserRequest $request){
