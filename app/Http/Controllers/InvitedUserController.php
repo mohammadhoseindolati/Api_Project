@@ -17,10 +17,12 @@ class InvitedUserController extends ApiController
 
         if (! in_array($bulk , $validBulk)){
 
-            return $this->errorResponse("The number should be 10 , 50 , 100 " , 404) ;
+            return $this->errorResponse("The number should be 10 , 50 , 100 " , 401) ;
         }
 
-        $users = InvitedUser::paginate($bulk);
+        $users = InvitedUser::limit(100)->paginate($bulk);
+
+        dd($users) ;
 
         $arrayParams = $this->getSearchParameters();
 
@@ -31,7 +33,7 @@ class InvitedUserController extends ApiController
 
         }
 
-        return $this->successResponse(new InvitedUserResource($result) , 200 ) ;
+        return $this->successResponse(InvitedUserResource::collection($result) , 200 ) ;
 
     }
 
