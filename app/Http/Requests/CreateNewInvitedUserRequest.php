@@ -30,9 +30,9 @@ class CreateNewInvitedUserRequest extends FormRequest
             'mobile' => 'required|max:50' ,
             'nationalCode' => 'required|max:10' ,
             'birthDate' => 'required' ,
-            'gender' => 'required' ,
+            'gender' => 'in:male,female' ,
             'insuranceID' => 'required' ,
-            'registerDate' => 'required' ,
+            // 'registerDate' => 'required' ,
             'status' => 'required' ,
 
         ];

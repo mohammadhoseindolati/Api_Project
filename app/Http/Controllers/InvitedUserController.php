@@ -6,6 +6,7 @@ use App\Http\Requests\CreateNewInvitedUserRequest;
 use App\Http\Requests\UpdateInvitedUserRequset;
 use App\Http\Resources\InvitedUserResource;
 use App\Models\InvitedUser;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -22,7 +23,6 @@ class InvitedUserController extends ApiController
 
         $users = InvitedUser::limit(100)->paginate($bulk);
 
-        dd($users) ;
 
         $arrayParams = $this->getSearchParameters();
 
@@ -48,7 +48,7 @@ class InvitedUserController extends ApiController
             'birthDate' => $request->get('birthDate') ,
             'gender' => $request->get('gender') ,
             'insuranceID' => $request->get('insuranceID') ,
-            'registerDate' => $request->get('registerDate') ,
+            'registerDate' => Carbon::now() ,
             'status' => $request->get('status'),
         ]);
 

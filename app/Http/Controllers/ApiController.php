@@ -18,6 +18,8 @@ class ApiController extends Controller
         parse_str($pars['query'] , $parameters) ;
 
         $parameterSearch = array_filter($parameters , function ($param){
+
+            // filter parameter of pagination
             return $param !== "page" ;
         } , ARRAY_FILTER_USE_KEY);
 
