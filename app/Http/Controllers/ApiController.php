@@ -7,22 +7,31 @@ use Illuminate\Http\Request;
 
 class ApiController extends Controller
 {
-    use ApiResponser ;
+    use ApiResponser;
 
-    protected function getSearchParameters () : array {
+    protected function getSearchParameters(): array|null
+    {
 
         $url = $_SERVER['REQUEST_URI'];
 
         $pars = parse_url($url, $component = -1);
 
-        parse_str($pars['query'] , $parameters) ;
+        $parameter = "query" ;
 
-        $parameterSearch = array_filter($parameters , function ($param){
+        if (array_key_exists($parameter, $pars)) {
 
-            // filter parameter of pagination
-            return $param !== "page" ;
-        } , ARRAY_FILTER_USE_KEY);
+            parse_str($pars[$parameter], $parameters);
 
-        return $parameterSearch ;
+            $parameterSearch = array_filter($parameters, function ($param) {
+
+                // filter parameter of pagination
+                return $param !== "page";
+            }, ARRAY_FILTER_USE_KEY);
+
+            return $parameterSearch;
+        }else{
+
+            return null ;
+        }
     }
 }

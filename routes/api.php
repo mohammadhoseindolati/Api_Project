@@ -15,6 +15,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/add' , [\App\Http\Controllers\InvitedUserController::class , 'store']) ;
-Route::get('/list/{bulk}' , [\App\Http\Controllers\InvitedUserController::class, 'index']) ;
+Route::get('/list/{users}/{bulk}' , [\App\Http\Controllers\InvitedUserController::class, 'index']) ;
 Route::patch('/changeStatus/{user}', [\App\Http\Controllers\InvitedUserController::class , 'update']) ;
 
