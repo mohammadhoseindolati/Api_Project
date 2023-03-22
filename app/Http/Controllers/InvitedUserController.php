@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class InvitedUserController extends ApiController
 {
-    public function index($users , $paginate)
+    public function index($count , $paginate)
     {
 
         $validBulk = [10, 50, 100];
@@ -24,7 +24,7 @@ class InvitedUserController extends ApiController
             return $this->errorResponse("The number of pagination should be 10 , 50 , 100 ", 422);
         }
 
-        if (!in_array($users, $validUsers)) {
+        if (!in_array($count, $validUsers)) {
 
             return $this->errorResponse("The number of users should be 100 , 1000 , 10000 ", 422);
         }
@@ -35,12 +35,12 @@ class InvitedUserController extends ApiController
 
             foreach ($arrayParams as $key => $value) {
 
-                $result[] =  $users = InvitedUser::where($key, $value)->limit($users)->paginate($paginate);
+                $result[] =  $users = InvitedUser::where($key, $value)->limit($count)->paginate($paginate);
             }
 
         }else{
 
-            $result = InvitedUser::limit($users)->paginate($paginate);
+            $result = InvitedUser::limit($count)->paginate($paginate);
         }
 
         return $this->successResponse($result, 200);
