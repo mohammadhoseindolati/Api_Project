@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateNewInvitedUserRequest;
+use App\Http\Requests\ShowInvitedUserRequest;
 use App\Http\Requests\UpdateInvitedUserRequset;
 use App\Http\Resources\InvitedUserResource;
 use App\Models\InvitedUser;
@@ -12,38 +13,40 @@ use Illuminate\Support\Facades\Validator;
 
 class InvitedUserController extends ApiController
 {
-    public function index($count , $paginate)
+    public function list(ShowInvitedUserRequest $request)
     {
+        $data = $request->validated();
 
-        $validBulk = [10, 50, 100];
+        // dd($data);
 
-        $validUsers = [100 , 1000 , 10000];
+        $result = InvitedUser::when(isset($data['family']), function ($query) use($data) {
 
-        if (!in_array($paginate, $validBulk)) {
+            $query->where('family', 'like', $data['family']);
+        })
+        ->when(isset($data['national_code']), function ($query) use($data) {
 
-            return $this->errorResponse("The number of pagination should be 10 , 50 , 100 ", 422);
-        }
+            $query->where('national_code', 'like', $data['national_code']);
+        })
+        ->when(isset($data['mobile']), function ($query) use($data) {
 
-        if (!in_array($count, $validUsers)) {
+            $query->where('mobile', 'like', $data['mobile']);
+        })
+        ->when(isset($data['status']), function ($query) use($data) {
 
-            return $this->errorResponse("The number of users should be 100 , 1000 , 10000 ", 422);
-        }
+            $query->where('status', 'like', $data['status']);
+        })
+        ->when(isset($data['register_date']), function ($query) use($data) {
 
-        $arrayParams = $this->getSearchParameters();
+            $query->where('register_date', 'like', $data['register_date']);
+        })
+            ->latest()->limit($data['count_of_users'])->paginate($data['show_per_page']);
 
-        if (is_array($arrayParams)){
+            if($result->isEmpty()){
 
-            foreach ($arrayParams as $key => $value) {
-
-                $result[] =  $users = InvitedUser::where($key, $value)->limit($count)->paginate($paginate);
+                return $this->errorResponse("Not Found" , 404);
             }
 
-        }else{
-
-            $result = InvitedUser::limit($count)->paginate($paginate);
-        }
-
-        return $this->successResponse($result, 200);
+            return $this->successResponse($result , 200) ;
     }
 
     public function store(CreateNewInvitedUserRequest $request)

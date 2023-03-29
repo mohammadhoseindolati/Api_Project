@@ -15,6 +15,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/add' , [\App\Http\Controllers\InvitedUserController::class , 'store']) ;
-Route::get('/list/{count}/{paginate}' , [\App\Http\Controllers\InvitedUserController::class, 'index']) ;
+Route::post('/list' , [\App\Http\Controllers\InvitedUserController::class, 'list']) ;
 Route::patch('/changeStatus/{user}', [\App\Http\Controllers\InvitedUserController::class , 'update']) ;
 

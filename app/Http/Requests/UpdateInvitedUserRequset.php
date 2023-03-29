@@ -2,20 +2,46 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
+use App\Traits\ApiResponser;
+use Illuminate\Support\Str;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use PHPUnit\Framework\MockObject\Api;
 
 class UpdateInvitedUserRequset extends FormRequest
 {
+
+    use ApiResponser;
     /**
      * Determine if the user is authorized to make this request.
      */
+
+    public function messages(): array
+    {
+        return [
+            'status.required' => 'status is required'
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'status' => 'status',
+        ];
+    }
+
     public function authorize(): bool
     {
         return true;
     }
 
+    // protected function prepareForValidation(): void
+    // {
+    //     $this->merge([
+    //         'slug' => Str::slug($this->slug),
+    //     ]);
+    // }
     /**
      * Get the validation rules that apply to the request.
      *
@@ -24,7 +50,7 @@ class UpdateInvitedUserRequset extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => 'required|in:pending,rejected,confirmed' ,
+            'status' => 'required|in:pending,rejected,confirmed',
         ];
     }
 
@@ -32,11 +58,6 @@ class UpdateInvitedUserRequset extends FormRequest
     {
         $errors = $validator->errors();
 
-        $response = response()->json([
-            'message' => 'Invalid data send',
-            'details' => $errors->messages(),
-        ], 422);
-
-        throw new HttpResponseException($response);
+        return $this->errorResponse($errors->messages() , 422);
     }
 }

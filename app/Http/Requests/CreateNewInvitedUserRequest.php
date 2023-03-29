@@ -2,12 +2,16 @@
 
 namespace App\Http\Requests;
 
+use App\Traits\ApiResponser;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use PHPUnit\Framework\MockObject\Api;
 
 class CreateNewInvitedUserRequest extends FormRequest
 {
+
+    use ApiResponser ;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -32,7 +36,6 @@ class CreateNewInvitedUserRequest extends FormRequest
             'birthDate' => 'required' ,
             'gender' => 'in:male,female' ,
             'insuranceID' => 'required' ,
-            // 'registerDate' => 'required' ,
             'status' => 'required' ,
 
         ];
@@ -42,11 +45,6 @@ class CreateNewInvitedUserRequest extends FormRequest
     {
         $errors = $validator->errors();
 
-        $response = response()->json([
-            'message' => 'Invalid data send',
-            'details' => $errors->messages(),
-        ], 422);
-
-        throw new HttpResponseException($response);
+        return $this->errorResponse($errors->messages() , 422);
     }
 }
